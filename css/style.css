@@ -1,0 +1,86 @@
+body, html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.calendar-container {
+    height: 100%;
+    background-color: #fff;
+    color: #333;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.calendar-header h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.calendar-body {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-top: 1px solid #ddd;
+}
+
+.calendar-day {
+    padding: 15px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.calendar-day:hover {
+    background-color: #aaa8a8;
+}
+
+.calendar-container:hover .calendar-body {
+    filter: brightness(0.8);
+}
+
+.current-month-day {
+    font-weight: bold;
+}
+
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
+
+.navigation-buttons button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.navigation-buttons button:hover {
+    background-color: #0056b3;
+}
+
+.weekdays {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    font-weight: bold;
+}

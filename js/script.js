@@ -1,3 +1,4 @@
+// script.js
 let monthYearElem = document.getElementById('month-year');
 let daysContainerElem = document.getElementById('days-container');
 
@@ -30,6 +31,7 @@ function displayCalendar(month, year) {
         if (i === currentDate.getDate() && month === currentDate.getMonth() + 1 && year === currentDate.getFullYear()) {
             dayElem.classList.add('today');
         }
+        dayElem.setAttribute('onclick', `openEventForm(${i}, ${month}, ${year})`);
         daysContainerElem.appendChild(dayElem);
     }
 }
@@ -55,4 +57,8 @@ function nextMonth() {
 function getMonthName(month) {
     let monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     return monthNames[month - 1];
+}
+
+function openEventForm(day, month, year) {
+    window.location.href = `../frmEvento.php?day=${day}&month=${month}&year=${year}`;
 }

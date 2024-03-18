@@ -42,10 +42,10 @@
                             include_once("Chat/frmChat.php"); // Formulário de chat
                             break;
                         case 'equipe':
-                            include_once("Equipe/frmEquipe.php"); // Formulário de equipe
+                            include_once("Equipe.php"); // Formulário de equipe
                             break;
                         case 'calendario':
-                            include_once("Calendario/Calendario.php"); // Formulário de calendário
+                            include_once("Calendario.php"); // Formulário de calendário
                             break;
                         default:
                             include_once("Body/_home.php"); // Página inicial

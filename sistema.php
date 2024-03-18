@@ -11,61 +11,49 @@
 
 <body>
 
-    <div class="container">
-        <div class="row">
-            <?php include_once("Body/_topo.php"); ?>
-        </div>
-    </div>
-    <div class="container mb-3">
-        <div class="row">
-            <div class="col-sm-2">
-                <?php include_once("Body/_menu.php"); ?>
-                <?php include_once("Login/autenticar.php"); ?>
-            </div>
-            <div class="col-sm-10">
-                <?php
-                if(isset($_GET['tela']))
-                {
-                    $tela = $_GET['tela'];
+    <!-- Header -->
+    <?php include_once("Body/_topo.php"); ?>
 
-                    switch ($tela) {
-                        case 'usuario':
-                            include_once("Usuario/frmusuario.php"); // Formulário de usuário
-                            break;
-                        case 'projeto':
-                            include_once("Projeto/frmProjeto.php"); // Formulário de projeto
-                            break;
-                        case 'tarefa':
-                            include_once("Tarefa/frmTarefa.php"); // Formulário de tarefa
-                            break;
-                        case 'chat':
-                            include_once("Chat/frmChat.php"); // Formulário de chat
-                            break;
-                        case 'equipe':
-                            include_once("Equipe.php"); // Formulário de equipe
-                            break;
-                        case 'calendario':
-                            include_once("Calendario.php"); // Formulário de calendário
-                            break;
-                        default:
-                            include_once("Body/_home.php"); // Página inicial
-                            break;
-                    }
+    <!-- Container principal -->
+    <div class="container-main">
+        <!-- Menu Lateral -->
+        <div class="menu">
+            <?php include_once("Body/_menu.php"); ?>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="content">
+            <!-- Autenticação de Login -->
+            <?php include_once("Login/autenticar.php"); ?>
+
+            <!-- Conteúdo Dinâmico -->
+            <?php
+            if (isset($_GET['tela'])) {
+                $tela = $_GET['tela'];
+                $allowed_pages = array(
+                    'usuario' => "Usuario/frmusuario.php",
+                    'projeto' => "Projeto/frmProjeto.php",
+                    'tarefa' => "Tarefa/frmTarefa.php",
+                    'chat' => "Chat/frmChat.php",
+                    'equipe' => "Equipe.php",
+                    'calendario' => "Calendario.php"
+                );
+
+                if (array_key_exists($tela, $allowed_pages)) {
+                    include_once($allowed_pages[$tela]);
+                } else {
+                    include_once("Body/_home.php");
                 }
-                else
-                {
-                    include_once("Body/_home.php"); // Página inicial
-                }
-                ?>
-            </div>
+            } else {
+                include_once("Body/_home.php");
+            }
+            ?>
         </div>
     </div>
-    <div class="container">
-        <div class="row">
-        <?php include_once("Body/_rodape.php"); ?>
-        </div>
-    </div>
-    
+
+    <!-- Rodapé -->
+    <?php include_once("Body/_rodape.php"); ?>
+
     <script src="js/bootstrap.js"></script>
 </body>
 

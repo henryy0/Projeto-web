@@ -1,0 +1,42 @@
+/* Reset de Estilos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    min-height: 100vh; /* Altura mínima da tela visível */
+    display: flex;
+    flex-direction: column;
+}
+
+.container-main {
+    display: flex;
+    flex: 1;
+}
+
+/* Estilo do Conteúdo Principal */
+.content {
+    flex: 1; /* Ocupa todo o espaço restante */
+    padding: 20px; /* Espaçamento interno */
+}
+
+/* Estilo para a Div do Menu Lateral */
+.menu {
+    width: 220px; /* Largura do menu lateral */
+    background-color: #343a40;
+    color: #fff;
+}
+
+/* Estilo do Rodapé */
+.footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}

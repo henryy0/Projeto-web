@@ -1,4 +1,13 @@
 <!-- topo.php -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topo</title>
+    <link rel="stylesheet" href="topo.css">
+</head>
+<body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -23,3 +32,6 @@
         </div>
     </nav>
 </header>
+
+</body>
+</html>

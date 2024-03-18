@@ -20,12 +20,6 @@ body {
     flex: 1;
 }
 
-/* Estilo do Conteúdo Principal */
-.content {
-    flex: 1; /* Ocupa todo o espaço restante */
-    padding: 20px; /* Espaçamento interno */
-}
-
 /* Estilo para a Div do Menu Lateral */
 .menu {
     width: 220px; /* Largura do menu lateral */
@@ -39,4 +33,11 @@ body {
     color: #fff;
     padding: 20px 0;
     text-align: center;
+}
+
+/* Adicionando responsividade com Bootstrap */
+@media (max-width: 768px) {
+    .menu {
+        width: 100%; /* Em telas menores, ocupará toda a largura */
+    }
 }

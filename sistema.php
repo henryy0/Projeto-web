@@ -52,7 +52,9 @@
     </div>
 
     <!-- Rodapé -->
-    <?php include_once("Body/_rodape.php"); ?>
+    <div class="footer">
+        <?php include_once("Body/_rodape.php"); ?>
+    </div>
 
     <script src="js/bootstrap.js"></script>
 </body>

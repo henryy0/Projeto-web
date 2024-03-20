@@ -1,0 +1,46 @@
+/* style.css */
+
+/* Estilo para a navbar */
+.navbar {
+    background-color: #007bff; /* Azul */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+    color: #fff !important; /* Texto branco */
+}
+
+.navbar-brand:hover,
+.navbar-nav .nav-link:hover {
+    color: #f8f9fa !important; /* Cinza claro */
+}
+
+/* Estilo para o conteúdo principal */
+.content {
+    padding: 20px;
+    background-color: #f8f9fa; /* Fundo cinza claro */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+/* Estilo para os links da navbar */
+.navbar-nav .nav-link {
+    color: #fff !important; /* Texto branco */
+}
+
+/* Efeito de hover para os links da navbar */
+.navbar-nav .nav-link:hover {
+    color: #000000 !important; /* Texto branco ao passar o mouse */
+}
+
+/* Estilo para o rodapé */
+.footer {
+    background-color: #007bff; /* Azul */
+    color: #fff; /* Texto branco */
+    padding: 20px;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+.navbar-nav .nav-link img {
+    border-radius: 50%; /* Bordas arredondadas */
+}

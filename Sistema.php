@@ -90,7 +90,7 @@ session_start();
                     } else {
                         // Se o usuário não estiver logado, exibe o link de login
                         echo '<li class="nav-item">';
-                        echo '<a class="nav-link" href="Usuario/login.php">';
+                        echo '<a class="nav-link" href="index.php">';
                         echo '<i class="fas fa-user"></i> Login';
                         echo '</a>';
                         echo '</li>';
@@ -115,13 +115,13 @@ session_start();
                                 include_once("Tarefa/frmtarefa.php");
                                 break;
                             case 'projeto':
-                                include_once("Projeto/frmProjeto.php");
+                                include_once("Projeto/Projeto.php");
                                 break;
                             case 'equipe':
                                 include_once("Equipe/frmEquipe.php");
                                 break;
                             case 'chat':
-                                include_once("Chat/frmChat.php");
+                                include_once("Chat/chat.php");
                                 break;
                             default:
                                 include_once("Body/_home.php");

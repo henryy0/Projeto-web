@@ -43,7 +43,7 @@
                         <h3 class="text-center">Login</h3>
                     </div>
                     <div class="card-body">
-                        <form action="processar_login.php" method="post">
+                        <form action="Usuario/processar_login.php" method="post">
                             <div class="form-group">
                                 <label for="login">Login:</label>
                                 <input type="text" class="form-control" id="login" name="login" required>
@@ -55,7 +55,7 @@
                             <button type="submit" class="btn btn-primary btn-block">Entrar</button>
                         </form>
                         <div class="text-center mt-3">
-                            <p>Não tem uma conta? <a href="cadastro.php">Cadastrar-se</a></p>
+                            <p>Não tem uma conta? <a href="Usuario/cadastro.php">Cadastrar-se</a></p>
                         </div>
                     </div>
                 </div>

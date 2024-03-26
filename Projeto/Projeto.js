@@ -1,10 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const projectTableBody = document.getElementById('projectTableBody');
+
+    // Função para calcular a porcentagem de progresso do projeto
+    function calculateProjectProgress(completedTasks, totalTasks) {
+        if (totalTasks === 0) {
+            return 0;
+        }
+        return Math.round((completedTasks / totalTasks) * 100);
+    }
+
     // Função para carregar os projetos
     function loadProjects() {
         fetch('Projeto/get_projects.php')
             .then(response => response.json())
             .then(data => {
-                const projectTableBody = document.getElementById('projectTableBody');
                 projectTableBody.innerHTML = '';
 
                 data.forEach(project => {
@@ -15,39 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${project.Data_inicio_Projeto}</td>
                         <td>${project.Data_Fim_Projeto}</td>
                         <td>${project.Status_Projeto}</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: ${calculateProjectProgress(project.CompletedTasks, project.TotalTasks)}%;" aria-valuenow="${calculateProjectProgress(project.CompletedTasks, project.TotalTasks)}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </td>
+                        <td>${calculateProjectProgress(project.CompletedTasks, project.TotalTasks)}%</td>
                         <td>
                             <button class="btn btn-info btn-sm mr-2 editButton" data-toggle="modal" data-target="#editProjectModal" data-id="${project.ID_Projeto}">Editar</button>
                             <button class="btn btn-danger btn-sm deleteButton" data-toggle="modal" data-target="#deleteProjectModal" data-id="${project.ID_Projeto}">Excluir</button>
                         </td>
                     `;
                     projectTableBody.appendChild(row);
-                });
-
-                // Adicionar evento de clique para botões de editar projeto
-                document.querySelectorAll('.editButton').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const projectId = this.getAttribute('data-id');
-                        fetch(`Projeto/get_project.php?id=${projectId}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                document.getElementById('editProjectId').value = data.ID_Projeto;
-                                document.getElementById('editProjectName').value = data.Nome_Projeto;
-                                document.getElementById('editProjectType').value = data.Tipo_Projeto;
-                                document.getElementById('editProjectStartDate').value = data.Data_inicio_Projeto;
-                                document.getElementById('editProjectEndDate').value = data.Data_Fim_Projeto;
-                                document.getElementById('editProjectStatus').value = data.Status_Projeto;
-                                document.getElementById('editProjectSummary').value = data.Resumo_Projeto;
-                                document.getElementById('editProjectRisks').value = data.Riscos_Projeto;
-                                document.getElementById('editProjectBudget').value = data.Orcamento_Projeto;
-                                document.getElementById('editProjectResources').value = data.Recursos_Projeto;
-                            })
-                            .catch(error => console.error('Erro ao buscar dados do projeto para edição:', error));
-                    });
                 });
             })
             .catch(error => console.error('Erro ao carregar projetos:', error));
@@ -98,12 +81,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-});
+    // Adicionar evento de submissão para formulário de edição de projeto
+    document.getElementById('editProjectForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
 
-// Função para calcular a porcentagem do projeto
-function calculateProjectProgress(completedTasks, totalTasks) {
-    if (totalTasks === 0) {
-        return 0;
-    }
-    return Math.round((completedTasks / totalTasks) * 100);
-}
+        fetch('Projeto/edit_project.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                $('#editProjectModal').modal('hide');
+                location.reload(); // Recarregar a página após edição bem-sucedida
+            } else {
+                console.error('Erro ao editar projeto:', data.message);
+            }
+        })
+        .catch(error => console.error('Erro ao editar projeto:', error));
+    });
+});

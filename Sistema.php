@@ -112,7 +112,7 @@ session_start();
                         $tela = $_GET['tela'];
                         switch ($tela) {
                             case 'tarefa':
-                                include_once("Tarefa/frmtarefa.php");
+                                include_once("Tarefa/Tarefa.php");
                                 break;
                             case 'projeto':
                                 include_once("Projeto/Projeto.php");

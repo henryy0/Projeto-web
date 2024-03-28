@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Usuario (
     foto_usuario VARCHAR(255), -- Novo campo para armazenar o nome do arquivo da foto de perfil
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-select * from Usuario;
+select * from Projeto;
  
 CREATE TABLE IF NOT EXISTS Projeto (
     ID_Projeto INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,8 +26,34 @@ CREATE TABLE IF NOT EXISTS Projeto (
     Riscos_Projeto TEXT NOT NULL,
     Orcamento_Projeto DECIMAL(10, 2) NOT NULL,
     Recursos_Projeto TEXT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+	Num_Total_Tarefas INT NOT NULL DEFAULT 0,
+	Num_Tarefas_Concluidas INT NOT NULL DEFAULT 0,
+	data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+DELIMITER //
+
+CREATE TRIGGER After_Insert_Tarefa
+AFTER INSERT ON Tarefa
+FOR EACH ROW
+BEGIN
+    UPDATE Projeto
+    SET Num_Tarefas_Concluidas = Num_Tarefas_Concluidas + 1
+    WHERE ID_Projeto = NEW.Projeto_tarefa;
+END//
+
+CREATE TRIGGER After_Delete_Tarefa
+AFTER DELETE ON Tarefa
+FOR EACH ROW
+BEGIN
+    UPDATE Projeto
+    SET Num_Tarefas_Concluidas = Num_Tarefas_Concluidas - 1
+    WHERE ID_Projeto = OLD.Projeto_tarefa;
+END//
+
+DELIMITER ;
+
+select * from Tarefa;
  
 CREATE TABLE IF NOT EXISTS Tarefa (
     ID_tarefa INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,25 +69,11 @@ CREATE TABLE IF NOT EXISTS Tarefa (
     FOREIGN KEY (Responsavel_tarefa) REFERENCES Usuario(id_usuario)
 );
  
-CREATE TABLE IF NOT EXISTS Chat (
-    ID_chat INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario1_chat INT NOT NULL,
-    id_usuario2_chat INT NOT NULL,
-    CONSTRAINT FK_id_usuario1_chat FOREIGN KEY (id_usuario1_chat) REFERENCES Usuario(id_usuario),
-    CONSTRAINT FK_id_usuario2_chat FOREIGN KEY (id_usuario2_chat) REFERENCES Usuario(id_usuario),
-    data_ultima_mensagem DATETIME,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
-);
- 
 CREATE TABLE IF NOT EXISTS Mensagem (
     id_mensagem INT AUTO_INCREMENT PRIMARY KEY,
-    id_chat_mensagem INT NOT NULL,
-    id_usuario_mensagem INT NOT NULL,
+    id_usuario INT NOT NULL,
     texto_mensagem TEXT NOT NULL,
-    data_mensagem DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status_mensagem VARCHAR(20) NOT NULL,
-    FOREIGN KEY (id_chat_mensagem) REFERENCES Chat(ID_chat),
-    FOREIGN KEY (id_usuario_mensagem) REFERENCES Usuario(id_usuario)
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
  
 CREATE TABLE IF NOT EXISTS Equipe (
@@ -74,6 +86,8 @@ CREATE TABLE IF NOT EXISTS Equipe (
     CONSTRAINT FK_Equipe_Lider FOREIGN KEY (equipe_lider_id) REFERENCES Usuario(id_usuario),
     CONSTRAINT FK_Projeto_atribuido FOREIGN KEY (Projeto_atribuido_ID) REFERENCES Projeto(ID_Projeto)
 );
+
+select * from Equipe;
  
 CREATE TABLE IF NOT EXISTS Calendario (
     ID_calendario INT AUTO_INCREMENT PRIMARY KEY,

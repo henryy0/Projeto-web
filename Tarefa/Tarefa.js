@@ -1,43 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Função para carregar projetos
-    function loadProjects() {
-        const projectSelect = document.getElementById('project');
-        if (!projectSelect) {
-            console.error('Elemento project não encontrado.');
-            return;
-        }
-
+    function loadProjects(selectElement) {
         fetch('Projeto/get_projects.php')
             .then(response => response.json())
             .then(data => {
-                projectSelect.innerHTML = '';
+                selectElement.innerHTML = '';
                 data.forEach(project => {
                     const option = document.createElement('option');
                     option.value = project.ID_Projeto;
                     option.textContent = project.Nome_Projeto;
-                    projectSelect.appendChild(option);
+                    selectElement.appendChild(option);
                 });
             })
             .catch(error => console.error('Erro ao carregar projetos:', error));
     }
 
     // Função para carregar responsáveis
-    function loadResponsibles() {
-        const responsibleSelect = document.getElementById('responsible');
-        if (!responsibleSelect) {
-            console.error('Elemento responsible não encontrado.');
-            return;
-        }
-
+    function loadResponsibles(selectElement) {
         fetch('Usuario/get_users.php')
             .then(response => response.json())
             .then(data => {
-                responsibleSelect.innerHTML = '';
+                selectElement.innerHTML = '';
                 data.forEach(user => {
                     const option = document.createElement('option');
                     option.value = user.id_usuario;
                     option.textContent = user.nome_usuario;
-                    responsibleSelect.appendChild(option);
+                    selectElement.appendChild(option);
                 });
             })
             .catch(error => console.error('Erro ao carregar responsáveis:', error));
@@ -50,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Elemento taskCardContainer não encontrado.');
             return;
         }
-    
+
         fetch('Tarefa/get_tasks.php')
             .then(response => {
                 // Verifica se a resposta não é um erro
@@ -62,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 // Limpa o contêiner antes de adicionar novos elementos
                 taskCardContainer.innerHTML = '';
-    
+
                 // Itera sobre os dados e cria cartões de tarefa
                 data.forEach(task => {
                     const taskCard = document.createElement('div');
@@ -70,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     taskCard.innerHTML = `
                         <div class="card-body">
                             <h5 class="card-title">${task.Nome_tarefa || 'Nome não definido'}</h5>
-                            <p class="card-text">${task.obs_tarefa || 'Descrição não definida'}</p>
+                            <p class="card-text">${task.Obs_tarefa || 'Descrição não definida'}</p>
                             <p class="card-text">Projeto: ${task.Nome_Projeto || 'Projeto não definido'}</p>
                             <p class="card-text">Responsável: ${task.nome_usuario || 'Responsável não definido'}</p>
                             <p class="card-text">Status: ${task.Status_tarefa || 'Status não definido'}</p>
@@ -88,90 +76,147 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Erro ao carregar tarefas:', error);
             });
     }
-    
 
-    // Carrega projetos, responsáveis e tarefas ao iniciar a página
-    loadProjects();
-    loadResponsibles();
-    loadTasks();
+    // Carrega projetos e responsáveis ao iniciar a página
+    const addTaskModal = document.getElementById('addTaskModal');
+    const editTaskModal = document.getElementById('editTaskModal');
 
-    // Adicionar evento de submissão para adicionar tarefa
+    if (addTaskModal && editTaskModal) {
+        addTaskModal.addEventListener('show.bs.modal', function () {
+            const projectSelect = document.getElementById('project');
+            const responsibleSelect = document.getElementById('responsible');
+            if (projectSelect && responsibleSelect) {
+                loadProjects(projectSelect);
+                loadResponsibles(responsibleSelect);
+            }
+        });
+
+        editTaskModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; // Botão que acionou o modal
+            const taskId = button.getAttribute('data-id'); // Extrai o ID da tarefa do botão
+
+            const editTaskForm = document.getElementById('editTaskForm');
+            if (editTaskForm) {
+                fetch(`Tarefa/get_task.php?id=${taskId}`)
+                    .then(response => {
+                        // Verifica se a resposta não é um erro
+                        if (!response.ok) {
+                            throw new Error('Erro ao obter tarefa: ' + response.statusText);
+                        }
+                        return response.json(); // Retorna os dados da tarefa como JSON
+                    })
+                    .then(task => {
+                        // Preencher os campos do formulário de edição com os dados da tarefa
+                        editTaskForm.querySelector('#editTaskName').value = task.Nome_tarefa || '';
+                        editTaskForm.querySelector('#editTaskStartDate').value = task.Data_inicio_Tarefa || '';
+                        editTaskForm.querySelector('#editTaskEndDate').value = task.Data_Fim_Tarefa || '';
+                        editTaskForm.querySelector('#editTaskStatus').value = task.Status_tarefa || '';
+                        editTaskForm.querySelector('#editTaskDescription').value = task.Obs_tarefa || '';
+                        editTaskForm.querySelector('#editTaskProject').value = task.Projeto_tarefa || '';
+                        editTaskForm.querySelector('#editTaskResponsible').value = task.Responsavel_tarefa || '';
+                        // Adicione campos adicionais conforme necessário
+                    })
+                    .catch(error => console.error('Erro ao carregar dados da tarefa:', error));
+            }
+        });
+    }
+
+    // Evento de clique no botão "Adicionar Tarefa"
     const addTaskForm = document.getElementById('addTaskForm');
     if (addTaskForm) {
         addTaskForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const formData = new FormData(this);
+            event.preventDefault(); // Impede o envio do formulário
 
+            const formData = new FormData(addTaskForm); // Obtém os dados do formulário
             fetch('Tarefa/add_task.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    $('#addTaskModal').modal('hide');
-                    loadTasks(); // Recarregar a lista de tarefas após adição bem-sucedida
-                } else {
-                    console.error('Erro ao adicionar tarefa:', data.message);
-                }
-            })
-            .catch(error => console.error('Erro ao adicionar tarefa:', error));
-        });
-    }
-
-    // Adicionar evento de clique para abrir o modal de edição de tarefa
-    const editTaskModal = document.getElementById('editTaskModal');
-    if (editTaskModal) {
-        document.addEventListener('click', function (event) {
-            if (event.target.classList.contains('editTaskButton')) {
-                const taskId = event.target.getAttribute('data-id');
-                fetch(`Tarefa/get_task.php?id=${taskId}`)
-                    .then(response => response.json())
-                    .then(task => {
-                        // Preencher os campos do modal com os dados da tarefa
-                        document.getElementById('editTaskId').value = taskId; // Adicionar o ID da tarefa oculto
-                        document.getElementById('editTaskName').value = task.Nome_tarefa || '';
-                        document.getElementById('editTaskDescription').value = task.obs_tarefa || '';
-                        document.getElementById('editTaskProject').value = task.Projeto_tarefa || '';
-                        document.getElementById('editTaskResponsible').value = task.Responsavel_tarefa || '';
-                        document.getElementById('editTaskStatus').value = task.Status_tarefa || '';
-                        document.getElementById('editTaskStartDate').value = task.Data_inicio_Tarefa || '';
-                        document.getElementById('editTaskEndDate').value = task.Data_Fim_Tarefa || '';
-                        // Preencher outros campos conforme necessário
-                        // ...
-
-                        // Recarregar as opções do projeto e do responsável
-                        loadProjects();
-                        loadResponsibles();
-
-                        $('#editTaskModal').modal('show');
-                    })
-                    .catch(error => console.error('Erro ao obter tarefa:', error));
-            }
-        });
-    }
-
-
-    // Adicionar evento de clique para confirmar exclusão de tarefa
-    const taskCardContainer = document.getElementById('taskCardContainer');
-    if (taskCardContainer) {
-        taskCardContainer.addEventListener('click', function (event) {
-            if (event.target.classList.contains('deleteTaskButton')) {
-                const taskId = event.target.getAttribute('data-id');
-                fetch(`Tarefa/delete_task.php?id=${taskId}`, {
-                    method: 'DELETE'
+                .then(response => {
+                    // Verifica se a resposta não é um erro
+                    if (!response.ok) {
+                        throw new Error('Erro ao adicionar tarefa: ' + response.statusText);
+                    }
+                    return response.json(); // Retorna os dados da resposta como JSON
                 })
-                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        loadTasks(); // Recarregar a lista de tarefas após exclusão bem-sucedida
+                        // Recarrega as tarefas após adicionar uma nova
+                        loadTasks();
+                        // Fecha o modal de adicionar tarefa
+                        const addTaskModal = new bootstrap.Modal(document.getElementById('addTaskModal'));
+                        addTaskModal.hide();
                     } else {
-                        console.error('Erro ao excluir tarefa:', data.message);
+                        console.error('Erro ao adicionar tarefa:', data.message || 'Erro desconhecido');
                     }
                 })
-                .catch(error => console.error('Erro ao excluir tarefa:', error));
-            }
+                .catch(error => console.error('Erro ao adicionar tarefa:', error));
         });
     }
-});
 
+    // Evento de clique no botão "Excluir Tarefa"
+const taskCardContainer = document.getElementById('taskCardContainer');
+if (taskCardContainer) {
+taskCardContainer.addEventListener('click', function (event) {
+if (event.target.classList.contains('deleteTaskButton')) {
+const taskId = event.target.getAttribute('data-id');
+if (confirm('Tem certeza de que deseja excluir esta tarefa?')) {
+    fetch('Tarefa/delete_task.php?id=' + taskId, {
+method: 'DELETE'
+})
+.then(response => {
+if (!response.ok) {
+throw new Error('Erro ao excluir tarefa: ' + response.statusText);
+}
+return response.json();
+})
+.then(data => {
+if (data.success) {
+// Recarrega as tarefas após excluir uma
+loadTasks();
+} else {
+console.error('Erro ao excluir tarefa:', data.message || 'Erro desconhecido');
+}
+})
+.catch(error => console.error('Erro ao excluir tarefa:', error));
+}
+}
+});
+}
+
+// Evento de envio do formulário de edição de tarefa
+const editTaskForm = document.getElementById('editTaskForm');
+if (editTaskForm) {
+    editTaskForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Impede o envio do formulário
+
+        const formData = new FormData(editTaskForm); // Obtém os dados do formulário
+        fetch('Tarefa/update_task.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                // Verifica se a resposta não é um erro
+                if (!response.ok) {
+                    throw new Error('Erro ao atualizar tarefa: ' + response.statusText);
+                }
+                return response.json(); // Retorna os dados da resposta como JSON
+            })
+            .then(data => {
+                if (data.success) {
+                    // Recarrega as tarefas após editar uma
+                    loadTasks();
+                    // Fecha o modal de editar tarefa
+                    const editTaskModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
+                    editTaskModal.hide();
+                } else {
+                    console.error('Erro ao atualizar tarefa:', data.message || 'Erro desconhecido');
+                }
+            })
+            .catch(error => console.error('Erro ao atualizar tarefa:', error));
+    });
+}
+
+// Carrega as tarefas ao iniciar a página
+loadTasks();
+});

@@ -8,14 +8,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dbname = "SistemaDeGerenciamento"; // Nome do seu banco de dados
 
     // Obtém os dados do formulário
-    $id = $_POST['id'];
-    $projeto = $_POST['projeto'];
-    $nome = $_POST['nome'];
-    $data_inicio = $_POST['data_inicio'];
-    $data_fim = $_POST['data_fim'];
-    $obs = $_POST['obs'];
-    $status = $_POST['status'];
-    $responsavel = $_POST['responsavel'];
+    $id = $_POST['editTaskId'];
+    $projeto = $_POST['editTaskProject'];
+    $nome = $_POST['editTaskName'];
+    $data_inicio = $_POST['editTaskStartDate'];
+    $data_fim = $_POST['editTaskEndDate'];
+    $obs = $_POST['editTaskDescription'];
+    $status = $_POST['editTaskStatus'];
+    $responsavel = $_POST['editTaskResponsible'];
 
     // Cria uma conexão com o banco de dados
     $conn = new mysqli($servername, $username, $password, $dbname);

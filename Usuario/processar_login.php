@@ -7,6 +7,7 @@ $password = "";
 $dbname = "SistemaDeGerenciamento";
 
 // Cria a conexão
+
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verifica a conexão

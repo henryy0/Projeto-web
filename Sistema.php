@@ -118,10 +118,10 @@ session_start();
                                 include_once("Projeto/Projeto.php");
                                 break;
                             case 'equipe':
-                                include_once("Equipe/frmEquipe.php");
+                                include_once("Equipe/Equipe.php");
                                 break;
                             case 'chat':
-                                include_once("Chat/chat.php");
+                                include_once("Chat/Chat.php");
                                 break;
                             default:
                                 include_once("Body/_home.php");
